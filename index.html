@@ -7,23 +7,101 @@
         :root {
             --width: 800px;
             --height: 600px;
+            --yellow: #e1c440;
+            --light-purple: #d138d3;
+            --dark-purple: #26002b;
         }
         body {
-            /*background-color: #303030;*/
-            background-color: black;
+            background-color: var(--dark-purple);
+            color: var(--yellow);
+            font-family: sans-serif;
+            font-size: 16px;
+        }
+        p {
+            line-height: 1.5em;
+        }
+        p.footer {
+            font-size: 14px;
         }
         canvas {
+            position: absolute;
+            display: block;
+            border-top: 1px solid var(--light-purple);
+            border-bottom: 1px solid var(--light-purple);
+        }
+        a, a:active, a:hover, a:visited {
+            color: var(--light-purple);
+            text-decoration: none;
+        }
+        hr {
+            height: 0;
+            border: 0;
+            border-top: 1px solid var(--light-purple);
+        }
+        .title {
+            margin: 20px 0;
+            height: 30px;
+        }
+        .container {
             margin: auto;
+            width: var(--width);
+            position: relative;
+        }
+        .demo {
+            width: var(--width);
+            height: var(--height);
+            margin-bottom: 40px;
+        }
+        .right {
+            text-align: right;
+        }
+
+        /* YouTube thumbnail */
+        .youtube-thumbnail {
+            position: absolute;
+            right: 5px;
+            top: 0;
+        }
+        .youtube-image {
+            width: 120px;
+            height: 60px;
+            background: url(youtube.png) center no-repeat;
+            background-size: contain;
+            position: relative;
+        }
+        .youtube-image img {
             display: block;
             position: absolute;
-            top: calc(50vh - var(--height) / 2);
-            left: calc(50vw - var(--width) / 2);
+            left: 68%;
+            top: 50%;
+            transform: translate(-50%, -50%);
         }
     </style>
 </head>
 <body>
 
-<canvas id="background-canvas"></canvas>
+<div class="container">
+    <img class="title" src="title.svg" alt="title">
+
+    <!--<p>Whenever a large sample of chaotic elements are taken [...], an unsuspected and most beautiful form of regularity proves to have been latent all along.</p>-->
+    <!--<p class="right">Sir Francis Galton</p>-->
+
+    <div class="demo">
+        <canvas id="background-canvas"></canvas>
+        <canvas id="matter-canvas"></canvas>
+
+        <div class="youtube-thumbnail">
+            <a href="https://youtu.be/UCmPmkHqHXk" target="_blank" title="Michael Stevens explaining how the Galton board works">
+                <div class="youtube-image">
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <p>This demo uses <a href="http://brm.io/matter-js/" target="_blank">Matter.js</a> to simulate a Galton board, accumulating the contribution of each fallen bead to the distribution graph, which is expected to converge to a bell curve as the simulation progresses.</p>
+
+    <p class="right footer">Made by <a href="//luciopaiva.com" target="_blank">Lucio Paiva</a>, Sep. 2018.</p>
+</div>
 
 <script src="matter.min.js"></script>
 <script src="index.js"></script>

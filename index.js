@@ -57,11 +57,14 @@ class Galton {
         /** @type {CanvasRenderingContext2D} */
         this.backgroundContext = this.backgroundCanvas.getContext("2d");
 
+        this.matterCanvas = document.getElementById("matter-canvas");
+
         this.engine = Engine.create();
         this.world = this.engine.world;
         this.render = Render.create({
-            element: document.body,
             engine: this.engine,
+            canvas: this.matterCanvas,
+            context: this.matterCanvas.getContext("2d"),
             options: {
                 width: this.canvasWidth,
                 height: this.canvasHeight,
@@ -194,8 +197,6 @@ class Galton {
 
     redrawDistributionsBars() {
         this.backgroundContext.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-        this.backgroundContext.fillStyle = "#000000";
-        this.backgroundContext.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
 
         for (let i = 0; i < this.numberOfSensors; i++) {
             const x = this.distributionBarsX + i * (this.spacing + this.distributionBarsManualDeltaAdjust);
