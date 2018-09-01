@@ -4,16 +4,26 @@
     <meta charset="UTF-8">
     <title>Galton board</title>
     <style>
+        :root {
+            --width: 800px;
+            --height: 600px;
+        }
         body {
-            background-color: #303030;
+            /*background-color: #303030;*/
+            background-color: black;
         }
         canvas {
             margin: auto;
             display: block;
+            position: absolute;
+            top: calc(50vh - var(--height) / 2);
+            left: calc(50vw - var(--width) / 2);
         }
     </style>
 </head>
 <body>
+
+<canvas id="background-canvas"></canvas>
 
 <script src="matter.min.js"></script>
 <script src="index.js"></script>
