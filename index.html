@@ -5,11 +5,24 @@
     <title>Galton board</title>
     <style>
         :root {
-            --width: 800px;
-            --height: 600px;
+            --app-width: 800px;
+            --app-height: 600px;
+
+            /** matter.js app layout parameters */
+            --app-top-peg-y: 100;
+            --app-bottom-peg-row-size: 9;
+            --app-spacing: 30;
+
+            --app-bead-period-in-millis: 200;
+            --app-bead-start-position-range-begin: -3;
+            --app-bead-start-position-range-end: 3;
+            --app-bead-size: 6;
+            --app-peg-size: 4;
+
             --yellow: #e1c440;
             --light-purple: #d138d3;
             --dark-purple: #26002b;
+            --green: #2a780f;
         }
         body {
             margin: 0;
@@ -46,12 +59,12 @@
         }
         .container {
             margin: 10px auto;
-            width: var(--width);
+            width: var(--app-width);
             position: relative;
         }
         .demo {
-            width: var(--width);
-            height: var(--height);
+            width: var(--app-width);
+            height: var(--app-height);
             margin-bottom: 40px;
         }
         .right {

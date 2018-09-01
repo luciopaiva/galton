@@ -15,24 +15,61 @@ const
 const rad = deg => deg * (Math.PI / 180);
 const randomRange = (begin, end) => begin + Math.random() * (end - begin);
 
+class CssUtils {
+
+    static readCssVar(varName) {
+        varName = varName.startsWith("--") ? varName : "--" + varName;
+        return window.getComputedStyle(document.documentElement).getPropertyValue(varName);
+    }
+
+    static readCssVarAsNumber(varName) {
+        return parseInt(CssUtils.readCssVar(varName), 10);
+    }
+
+    static readCalculatedCssVarAsNumber(varName) {
+        let div = document.getElementById("readCalculatedCssVarAsNumber");
+        if (!div) {
+            div = document.createElement("div");
+            div.setAttribute("id", "readCalculatedCssVarAsNumber");
+            div.setAttribute("position", "absolute");  // detach it from the flow so it doesn't break anything
+            document.body.appendChild(div);  // won't work unless you actually append it to the DOM
+        }
+        div.style.strokeWidth = readCssVar(varName);  // apply it to some innocent property
+        return parseInt(getComputedStyle(div).getPropertyValue("stroke-width"), 10);  // read it back!
+    }
+
+    static writeCssVar(varName, value) {
+        varName = varName.startsWith("--") ? varName : "--" + varName;
+        document.documentElement.style.setProperty(varName, value);
+    }
+}
+
 class Galton {
 
     constructor () {
-        this.canvasWidth = 800;
-        this.canvasHeight = 600;
+        this.canvasWidth = CssUtils.readCssVarAsNumber("app-width");
+        this.canvasHeight = CssUtils.readCssVarAsNumber("app-height");
 
-        this.spacing = 30;
-        this.pinsHorizontalSpacing = 2 * this.spacing;
-        this.pinsVerticalSpacing = this.spacing;
-        this.bottomPinRowSize = 9;
-        this.pinPyramidHeight = (this.bottomPinRowSize - 1) * this.pinsVerticalSpacing;
-        this.topPinY = 100;
+        this.yellow = CssUtils.readCssVar("yellow");
+        this.lightPurple = CssUtils.readCssVar("light-purple");
+        this.green = CssUtils.readCssVar("green");
 
-        this.tubeHeight = this.pinPyramidHeight;  // just make it the same height as the pyramid
+        this.spacing = CssUtils.readCssVarAsNumber("app-spacing");
+        this.pegsHorizontalSpacing = 2 * this.spacing;
+        this.pegsVerticalSpacing = this.spacing;
+        this.bottomPegRowSize = CssUtils.readCssVarAsNumber("app-bottom-peg-row-size");
+        this.pegPyramidHeight = (this.bottomPegRowSize - 1) * this.pegsVerticalSpacing;
+        this.topPegY = CssUtils.readCssVarAsNumber("app-top-peg-y");
+        this.beadStartPositionRangeBegin = CssUtils.readCssVarAsNumber("app-bead-start-position-range-begin");
+        this.beadStartPositionRangeEnd = CssUtils.readCssVarAsNumber("app-bead-start-position-range-end");
+        this.beadSize = CssUtils.readCssVarAsNumber("app-bead-size");
+        this.pegSize = CssUtils.readCssVarAsNumber("app-peg-size");
+
+        this.tubeHeight = this.pegPyramidHeight;  // just make it the same height as the pyramid
         this.halfTubeHeight = this.tubeHeight / 2;
-        this.tubesY = this.topPinY + this.pinPyramidHeight + this.spacing + this.halfTubeHeight;
-        this.numberOfTubeWalls = this.bottomPinRowSize * 2 + 1;
-        this.tubesHorizontalSpacing = this.pinsHorizontalSpacing / 2;
+        this.tubesY = this.topPegY + this.pegPyramidHeight + this.spacing + this.halfTubeHeight;
+        this.numberOfTubeWalls = this.bottomPegRowSize * 2 + 1;
+        this.tubesHorizontalSpacing = this.pegsHorizontalSpacing / 2;
         this.tubesWidth = (this.numberOfTubeWalls - 1) * this.tubesHorizontalSpacing;
         this.halfTubesWidth = this.tubesWidth / 2;
 
@@ -78,7 +115,7 @@ class Galton {
         const runner = Runner.create();
         Runner.run(runner, this.engine);
 
-        this.makePinsPyramid();
+        this.makePegsPyramid();
         this.makeBead();
         // this.makeFunnel();
         this.makeTubes();
@@ -88,7 +125,7 @@ class Galton {
 
         Events.on(this.engine, "collisionEnd", this.onCollisionEnd.bind(this));
 
-        setInterval(this.makeBead.bind(this), 200);
+        setInterval(this.makeBead.bind(this), CssUtils.readCssVarAsNumber("app-bead-period-in-millis"));
         setInterval(this.removeFallenBeads.bind(this), 5000);
     }
 
@@ -127,13 +164,14 @@ class Galton {
 
     makeBead() {
         if (document.hidden) {
-            // if the tab doesn't have focus, it's likely the simulation is paused; do not insert new objects otherwise the simulation may break if too many accumulate at the same spot
+            // if the tab doesn't have focus, it's likely the simulation is paused; do not insert new objects otherwise
+            // the simulation may break if too many accumulate at the same spot
             return;
         }
-        const x = randomRange(-3, 3);
-        World.add(this.world, Bodies.circle(x, 0, 8, {
+        const x = randomRange(this.beadStartPositionRangeBegin, this.beadStartPositionRangeEnd);
+        World.add(this.world, Bodies.circle(x, 0, this.beadSize, {
             friction: 1e-5, restitution: 0.001, density: 1e-3,
-            render: { fillStyle: "#ffc83d" },
+            render: { fillStyle: this.yellow },
         }));
     }
 
@@ -147,18 +185,18 @@ class Galton {
         ]);
     }
 
-    makePinsPyramid() {
-        for (let y = 0; y < this.bottomPinRowSize; y++) {
-            const rowWidth = y * this.pinsHorizontalSpacing;
+    makePegsPyramid() {
+        for (let y = 0; y < this.bottomPegRowSize; y++) {
+            const rowWidth = y * this.pegsHorizontalSpacing;
             const shiftToCentralize = rowWidth / 2;
 
             for (let x = 0; x <= y; x++) {
                 World.add(this.world, Bodies.circle(
-                    x * this.pinsHorizontalSpacing - shiftToCentralize,
-                    this.topPinY + y * this.pinsVerticalSpacing,
-                    4, {
+                    x * this.pegsHorizontalSpacing - shiftToCentralize,
+                    this.topPegY + y * this.pegsVerticalSpacing,
+                    this.pegSize, {
                         isStatic: true,
-                        render: { fillStyle: "#d138d3" },
+                        render: { fillStyle: this.lightPurple },
                     })
                 );
             }
@@ -173,7 +211,7 @@ class Galton {
                 this.tubesY, this.tubeHeight, 1, {
                     isStatic: true,
                     angle: rad(90),
-                    render: { fillStyle: "#d138d3" },
+                    render: { fillStyle: this.lightPurple },
                 })
             );
         }
@@ -202,7 +240,7 @@ class Galton {
             const height = this.tubeHeight * this.sensorCounters[i] / this.topCounter;
             const y = this.tubeHeight - height;
 
-            this.backgroundContext.fillStyle = "#2a780f";
+            this.backgroundContext.fillStyle = this.green;
             this.backgroundContext.fillRect(x, this.distributionBarsY + y, this.sensorSize, height);
         }
     }
