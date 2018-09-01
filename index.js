@@ -64,7 +64,6 @@ class Galton {
         this.render = Render.create({
             engine: this.engine,
             canvas: this.matterCanvas,
-            context: this.matterCanvas.getContext("2d"),
             options: {
                 width: this.canvasWidth,
                 height: this.canvasHeight,
