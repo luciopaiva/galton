@@ -153,7 +153,7 @@ class Galton {
                 World.add(this.world, Bodies.circle(
                     x * this.pinsHorizontalSpacing - shiftToCentralize,
                     this.topPinY + y * this.pinsVerticalSpacing,
-                    5, {
+                    4, {
                         isStatic: true,
                         render: { fillStyle: "#d138d3" },
                     })
@@ -170,7 +170,7 @@ class Galton {
                 this.tubesY, this.tubeHeight, 1, {
                     isStatic: true,
                     angle: rad(90),
-                    render: { fillStyle: "#2b7b1b" },
+                    render: { fillStyle: "#d138d3" },
                 })
             );
         }
