@@ -13,6 +13,7 @@ const
     Bodies = Matter.Bodies;
 
 const rad = deg => deg * (Math.PI / 180);
+const randomRange = (begin, end) => begin + Math.random() * (end - begin);
 
 class Galton {
 
@@ -85,7 +86,7 @@ class Galton {
 
         Events.on(this.engine, "collisionEnd", this.onCollisionEnd.bind(this));
 
-        setInterval(this.makeBead.bind(this), 250);
+        setInterval(this.makeBead.bind(this), 200);
         setInterval(this.removeFallenBeads.bind(this), 5000);
     }
 
@@ -127,7 +128,7 @@ class Galton {
             // if the tab doesn't have focus, it's likely the simulation is paused; do not insert new objects otherwise the simulation may break if too many accumulate at the same spot
             return;
         }
-        const x = Math.random() * 20 - 10;
+        const x = randomRange(-3, 3);
         World.add(this.world, Bodies.circle(x, 0, 8, {
             friction: 1e-5, restitution: 0.001, density: 1e-3,
             render: { fillStyle: "#ffc83d" },
