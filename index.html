@@ -12,6 +12,8 @@
             --dark-purple: #26002b;
         }
         body {
+            margin: 0;
+            padding: 0;
             background-color: var(--dark-purple);
             color: var(--yellow);
             font-family: sans-serif;
@@ -43,7 +45,7 @@
             height: 30px;
         }
         .container {
-            margin: auto;
+            margin: 10px auto;
             width: var(--width);
             position: relative;
         }
@@ -56,25 +58,15 @@
             text-align: right;
         }
 
-        /* YouTube thumbnail */
         .youtube-thumbnail {
             position: absolute;
-            right: 5px;
+            right: 0;
             top: 0;
-        }
-        .youtube-image {
-            width: 120px;
+
+            width: 105px;
             height: 60px;
             background: url(youtube.png) center no-repeat;
             background-size: contain;
-            position: relative;
-        }
-        .youtube-image img {
-            display: block;
-            position: absolute;
-            left: 68%;
-            top: 50%;
-            transform: translate(-50%, -50%);
         }
     </style>
 </head>
@@ -87,12 +79,9 @@
         <canvas id="background-canvas"></canvas>
         <canvas id="matter-canvas"></canvas>
 
-        <div class="youtube-thumbnail">
-            <a href="https://youtu.be/UCmPmkHqHXk" target="_blank" title="Michael Stevens explaining how the Galton board works">
-                <div class="youtube-image">
-                </div>
-            </a>
-        </div>
+        <a href="https://youtu.be/UCmPmkHqHXk" target="_blank" title="Michael Stevens explaining how the Galton board works">
+        <div class="youtube-thumbnail"></div>
+        </a>
     </div>
 
     <p>This demo uses <a href="http://brm.io/matter-js/" target="_blank">Matter.js</a> to simulate a Galton board, accumulating the contribution of each fallen bead to the distribution graph, which is expected to converge to a bell curve as the simulation progresses.</p>
